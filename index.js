@@ -214,7 +214,7 @@ function handleSubmit(e){
             OfficeNumber.innerHTML = `Tel: ${offices[4].phone}`
             OfficeFax.innerHTML =`Fax: ${offices[4].fax}`
             break;
-        case "Rancho Cucamonga":
+        case "Ontario":
             OfficeAddress.innerHTML = `
             ${offices[5].address}<br/>
             ${offices[5].city},${offices[5].state} ${offices[5].zipcode}
