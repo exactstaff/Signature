@@ -58,11 +58,11 @@ const offices = [
         "fax":"(805) 604-9933"
     },
     {
-        "name": "Rancho Cucamonga",
-        "address": "8331 Utica Ave #130",
-        "city":"Rancho Cucamonga",
+        "name": "Ontario",
+        "address": "3990 Concours St Suite #200",
+        "city":"Ontario",
         "state": "CA",
-        "zipcode": "91730",
+        "zipcode": "91764",
         "phone":"(909) 476-9000",
         "fax":"(909) 476-9033"
     },
