@@ -1,15 +1,15 @@
-const form = document.querySelector('form')
+const form = document.querySelector("form");
 // -----signature-----
 const EmployeeName = document.querySelector("#EMPLOYEE-NAME");
 const EmployeePosition = document.querySelector("#EMPLOYEE-POSITION");
-const OfficeAddress = document.querySelector('address');
-const OfficeNumber = document.querySelector('#OFFICE-NUMBER');
-const OfficeFax = document.querySelector('#OFFICE-FAX');
-const EmployeeCell = document.querySelector('#EMPLOYEE-CELL');
-const EmployeeEmail = document.querySelector('#EMPLOYEE-EMAIL');
+const OfficeAddress = document.querySelector("address");
+const OfficeNumber = document.querySelector("#OFFICE-NUMBER");
+const OfficeFax = document.querySelector("#OFFICE-FAX");
+const EmployeeCell = document.querySelector("#EMPLOYEE-CELL");
+const EmployeeEmail = document.querySelector("#EMPLOYEE-EMAIL");
 // -----button-----
-const FormButton = document.querySelector('BUTTON')
-const select = document.querySelector('select')
+const FormButton = document.querySelector("BUTTON");
+const select = document.querySelector("select");
 
 const offices = [
   {
@@ -148,8 +148,8 @@ function officeFormatter(key) {
     ${offices[0].address}<br/>
     ${offices[0].city},${offices[0].state} ${offices[0].zipcode}
     `;
-  OfficeNumber.innerHTML = `Tel:${offices[0].phone}`;
-  OfficeFax.innerHTML = `Fax:${offices[0].fax}`;
+  OfficeNumber.innerHTML = `Tel: ${offices[0].phone}`;
+  OfficeFax.innerHTML = `Fax: ${offices[0].fax}`;
 }
 
 offices.forEach(function (element, key) {
@@ -177,7 +177,7 @@ function handleSubmit(e) {
   EmployeeName.innerHTML = newEmployee.name;
   EmployeePosition.innerHTML = newEmployee.position;
   if (newEmployee.cell != "") {
-    EmployeeCell.innerHTML = `Cell:${formatPhoneNumber(newEmployee.cell)}`;
+    EmployeeCell.innerHTML = `Cell: ${formatPhoneNumber(newEmployee.cell)}`;
   }
   EmployeeEmail.innerHTML = newEmployee.email;
 
@@ -191,88 +191,88 @@ function handleSubmit(e) {
             ${offices[0].address}<br/>
             ${offices[0].city},${offices[0].state} ${offices[0].zipcode}
             `;
-      OfficeNumber.innerHTML = `Tel:${offices[0].phone}`;
-      OfficeFax.innerHTML = `Fax:${offices[0].fax}`;
+      OfficeNumber.innerHTML = `Tel: ${offices[0].phone}`;
+      OfficeFax.innerHTML = `Fax: ${offices[0].fax}`;
       break;
     case "Bakersfield":
       OfficeAddress.innerHTML = `
             ${offices[1].address}<br/>
             ${offices[1].city},${offices[1].state} ${offices[1].zipcode}
             `;
-      OfficeNumber.innerHTML = `Tel:${offices[1].phone}`;
-      OfficeFax.innerHTML = `Fax:${offices[1].fax}`;
+      OfficeNumber.innerHTML = `Tel: ${offices[1].phone}`;
+      OfficeFax.innerHTML = `Fax: ${offices[1].fax}`;
       break;
     case "Fresno":
       OfficeAddress.innerHTML = `
             ${offices[2].address}<br/>
             ${offices[2].city},${offices[2].state} ${offices[2].zipcode}
             `;
-      OfficeNumber.innerHTML = `Tel:${offices[2].phone}`;
-      OfficeFax.innerHTML = `Fax:${offices[2].fax}`;
+      OfficeNumber.innerHTML = `Tel: ${offices[2].phone}`;
+      OfficeFax.innerHTML = `Fax: ${offices[2].fax}`;
       break;
     case "Gardena/Torrance":
       OfficeAddress.innerHTML = `
             ${offices[3].address}<br/>
             ${offices[3].city},${offices[3].state} ${offices[3].zipcode}
             `;
-      OfficeNumber.innerHTML = `Tel:${offices[3].phone}`;
-      OfficeFax.innerHTML = `Fax:${offices[3].fax}`;
+      OfficeNumber.innerHTML = `Tel: ${offices[3].phone}`;
+      OfficeFax.innerHTML = `Fax: ${offices[3].fax}`;
       break;
     case "Oxnard":
       OfficeAddress.innerHTML = `
             ${offices[4].address}<br/>
             ${offices[4].city},${offices[4].state} ${offices[4].zipcode}
             `;
-      OfficeNumber.innerHTML = `Tel:${offices[4].phone}`;
-      OfficeFax.innerHTML = `Fax:${offices[4].fax}`;
+      OfficeNumber.innerHTML = `Tel: ${offices[4].phone}`;
+      OfficeFax.innerHTML = `Fax: ${offices[4].fax}`;
       break;
     case "Ontario":
       OfficeAddress.innerHTML = `
             ${offices[5].address}<br/>
             ${offices[5].city},${offices[5].state} ${offices[5].zipcode}
             `;
-      OfficeNumber.innerHTML = `Tel:${offices[5].phone}`;
-      OfficeFax.innerHTML = `Fax:${offices[5].fax}`;
+      OfficeNumber.innerHTML = `Tel: ${offices[5].phone}`;
+      OfficeFax.innerHTML = `Fax: ${offices[5].fax}`;
       break;
     case "Sacramento/Woodland":
       OfficeAddress.innerHTML = `
             ${offices[6].address}<br/>
             ${offices[6].city},${offices[6].state} ${offices[6].zipcode}
             `;
-      OfficeNumber.innerHTML = `Tel:${offices[6].phone}`;
-      OfficeFax.innerHTML = `Fax:${offices[6].fax}`;
+      OfficeNumber.innerHTML = `Tel: ${offices[6].phone}`;
+      OfficeFax.innerHTML = `Fax: ${offices[6].fax}`;
       break;
     case "Valencia/Santa Clarita":
       OfficeAddress.innerHTML = `
             ${offices[7].address}<br/>
             ${offices[7].city},${offices[7].state} ${offices[7].zipcode}
             `;
-      OfficeNumber.innerHTML = `Tel:${offices[7].phone}`;
-      OfficeFax.innerHTML = `Fax:${offices[7].fax}`;
+      OfficeNumber.innerHTML = `Tel: ${offices[7].phone}`;
+      OfficeFax.innerHTML = `Fax: ${offices[7].fax}`;
       break;
     case "Fresno":
       OfficeAddress.innerHTML = `
             ${offices[8].address}<br/>
             ${offices[8].city},${offices[8].state} ${offices[8].zipcode}
             `;
-      OfficeNumber.innerHTML = `Tel:${offices[8].phone}`;
-      OfficeFax.innerHTML = `Fax:${offices[8].fax}`;
+      OfficeNumber.innerHTML = `Tel: ${offices[8].phone}`;
+      OfficeFax.innerHTML = `Fax: ${offices[8].fax}`;
       break;
     case "Maryland":
       OfficeAddress.innerHTML = `
             ${offices[9].address}<br/>
             ${offices[9].city},${offices[9].state} ${offices[9].zipcode}
             `;
-      OfficeNumber.innerHTML = `Tel:${offices[9].phone}`;
-      OfficeFax.innerHTML = `Fax:${offices[9].fax}`;
+      OfficeNumber.innerHTML = `Tel: ${offices[9].phone}`;
+      OfficeFax.innerHTML = `Fax: ${offices[9].fax}`;
       break;
     case "Oregon":
       OfficeAddress.innerHTML = `
             ${offices[10].address}<br/>
             ${offices[10].city},${offices[10].state} ${offices[10].zipcode}
             `;
-      OfficeNumber.innerHTML = `Tel:${offices[10].phone}`;
-      OfficeFax.innerHTML = `Fax:${offices[10].fax}`;
+      OfficeNumber.innerHTML = `Tel: ${offices[10].phone}`;
+      OfficeFax.innerHTML = `Fax: ${offices[10].fax}`;
       break;
     case "Texas":
       OfficeAddress.innerHTML = `
@@ -314,5 +314,4 @@ function handleSubmit(e) {
   }
 }
 
-form.addEventListener('submit', handleSubmit)
-
+form.addEventListener("submit", handleSubmit);
