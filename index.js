@@ -36,8 +36,8 @@ const offices = [
     city: "Fresno",
     state: "CA",
     zipcode: "93720",
-    phone: "(818) 348-1100",
-    fax: "(818) 348-4949",
+    phone: "(559) 438-8848",
+    fax: "(559) 438-6676",
   },
   {
     name: "Gardena/Torrance",
@@ -64,7 +64,7 @@ const offices = [
     state: "CA",
     zipcode: "91764",
     phone: "(909) 476-9000",
-    fax: "(909) 476-9033",
+    fax: "(909) 476-9044",
   },
   {
     name: "Sacramento/Woodland",
@@ -90,8 +90,8 @@ const offices = [
     city: "Fresno",
     state: "CA",
     zipcode: "93720",
-    phone: "(818) 348-1100",
-    fax: "(818) 348-4949",
+    phone: "(559) 438-8848",
+    fax: "(559) 438-6676",
   },
   {
     name: "Maryland",
@@ -103,7 +103,7 @@ const offices = [
     fax: "(410) 287-8099",
   },
   {
-    name: "   Oregon",
+    name: "Oregon",
     address: "2225 Pacific Blvd SE #209",
     city: "Albany",
     state: "OR",
@@ -140,6 +140,15 @@ const offices = [
     zipcode: "",
     phone: "",
     fax: "",
+  },
+
+  {
+    name: "Massachusetts",
+    address: "89 Cross St.",
+    city: "Holliston",
+    state: "MA",
+    zipcode: "01746",
+    phone: "(978) 730-3019",
   },
 ];
 
@@ -307,6 +316,14 @@ function handleSubmit(e) {
             `;
       document.querySelector("#INFO-SEPERATOR").style.display = "none";
       OfficeNumber.innerHTML = ``;
+      OfficeFax.innerHTML = ``;
+      break;
+    case "Massachusetts":
+      OfficeAddress.innerHTML = `
+            ${offices[15].city},${offices[15].state} ${offices[15].zipcode}
+            `;
+      document.querySelector("#INFO-SEPERATOR").style.display = "none";
+      OfficeNumber.innerHTML = `Tel: ${offices[15].phone}`;
       OfficeFax.innerHTML = ``;
       break;
     default:
