@@ -44,7 +44,7 @@ const offices = [
     address: "19300 S Hamilton Ave #255",
     city: "Gardena",
     state: "CA",
-    zipcode: "90284",
+    zipcode: "90248",
     phone: "(310) 329-1900",
     fax: "(310) 329-0300",
   },
