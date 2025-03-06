@@ -41,10 +41,10 @@ const offices = [
   },
   {
     name: "Gardena/Torrance",
-    address: "19300 S Hamilton Ave #255",
-    city: "Gardena",
+    address: "3868 West Carson St Suite 212",
+    city: "Torrance",
     state: "CA",
-    zipcode: "90248",
+    zipcode: "90503",
     phone: "(310) 329-1900",
     fax: "(310) 329-0300",
   },
