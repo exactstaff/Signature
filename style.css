@@ -18,11 +18,38 @@ main{
     font-family: 'Poppins', sans-serif;
 }
 
-form {
+form.signature-form {
     margin: 0 auto;
-    width: 500px;
-    flex-direction: column;
+    width: 560px;
+    max-width: calc(100% - 32px);
     padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-row--two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 520px) {
+    .form-row--two {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-field label {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.form-field input,
+.form-field select {
+    width: 100%;
+    margin: 0;
 }
 
 .signature-creation{
@@ -49,11 +76,14 @@ h5{
     width: 300px;
 } */
 
-input[type=text], select {
+input[type=text],
+input[type=email],
+input[type=tel],
+select {
     width: 100%;
     padding: 5px 6px;
-    margin: 8px 0;
-    display: inline-block;
+    margin: 0;
+    display: block;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
@@ -63,31 +93,10 @@ input[type=text], select {
     background-color: #45a049;
   }
   
-input[type=email], select {
-    width: 100%;
-    padding: 5px 6px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-
-  input[type=tel]{
-    width: 100%;
-    padding: 5px 6px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  
-
   input[type=submit] {
     width: 100%;
     padding: 8px 6px;
-    margin: 8px 0;
+    margin: 4px 0 0;
     display: inline-block;
     border: 1px solid white;
     border-radius: 4px;

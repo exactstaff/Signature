@@ -14,23 +14,37 @@
       <p>Enter your information and click generate.</p>
     </div>
 
-    <form>
-      <label for="Employee Name">Employee Name:</label>
-      <input type="text" name="name" id="FORM-NAME" placeholder="Michael Scott" required>
+    <form class="signature-form">
+      <div class="form-row form-row--two">
+        <div class="form-field">
+          <label for="FORM-NAME">Employee Name:</label>
+          <input type="text" name="name" id="FORM-NAME" placeholder="Michael Scott" required>
+        </div>
+        <div class="form-field">
+          <label for="FORM-POSITION">Employee Position:</label>
+          <input type="text" name="position" id="FORM-POSITION" placeholder="Branch Manager" required>
+        </div>
+      </div>
 
-      <label for="Employee Name">Employee Position:</label>
-      <input type="text" name="position" id="FORM-POSITION" placeholder="Branch Manager" required>
+      <div class="form-row">
+        <div class="form-field">
+          <label for="EMPLOYEE-LOCATION">Location:</label>
+          <select name="location" id="EMPLOYEE-LOCATION" required>
+          </select>
+        </div>
+      </div>
 
-      <label for="Employee Name">Location:</label>
-      <select name="location" id="EMPLOYEE-LOCATION" required>
-      </select>
+      <div class="form-row form-row--two">
+        <div class="form-field">
+          <label for="FORM-EMAIL">Employee Email:</label>
+          <input type="email" name="email" id="FORM-EMAIL" placeholder="myemail@exactstaff.com" required>
+        </div>
+        <div class="form-field">
+          <label for="FORM-CELL">Employee Cell:</label>
+          <input type="tel" name="cell" id="FORM-CELL" placeholder="If none leave blank">
+        </div>
+      </div>
 
-      <label for="Employee Name">Employee Email:</label>
-      <input type="email" name="email" id="FORM-EMAIL" placeholder="myemail@exactstaff.com" required>
-
-      <label for="Employee Name">Employee Cell:</label>
-      <input type="tel" name="cell" id="FORM-CELL" placeholder="If none leave blank">
-      <br>
       <input type="submit" value="Generate" id="BUTTON" class="btn btn-primary">
     </form>
 
