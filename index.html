@@ -46,6 +46,11 @@
       </div>
 
       <input type="submit" value="Generate" id="BUTTON" class="btn btn-primary">
+      <button type="button" id="COPY-SIGNATURE" disabled>
+        Copy Signature <span class="testing-badge">(Testing phase)</span>
+      </button>
+      <p class="copy-hint">Optional: after Generate, use this button to copy a cross-client test version. Manual copy from the box below still works as before.</p>
+      <p class="copy-toast" id="COPY-TOAST" role="status" aria-live="polite" hidden></p>
     </form>
 
     <div class="warning">

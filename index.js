@@ -174,6 +174,286 @@ function formatPhoneNumber(phoneNumberString) {
   return null;
 }
 
+// ----- Copy Signature (Testing phase) — export only; preview/manual copy unchanged -----
+const BANNER_IMAGE_CANDIDATES = [
+  "https://www.exactstaff.com/wp-content/uploads/2026/06/three_logos.jpg",
+  "https://exactstaff.com/wp-content/uploads/2026/06/three_logos.jpg",
+];
+const copySignatureButton = document.querySelector("#COPY-SIGNATURE");
+const copyToast = document.querySelector("#COPY-TOAST");
+const infoSeparator = document.querySelector("#INFO-SEPERATOR");
+const previewBannerImg = document.querySelector(".signature img");
+
+const LEGAL_DISCLAIMER =
+  "Important Notice: This e-mail and any files transmitted with it are intended solely for the use of the individual or entity to which they are addressed and may contain confidential and/or privileged material. Any review, retransmission, dissemination or other confidential use of, or taking of any action in reliance upon, this information by persons or entities other than intended recipient is prohibited. If you have received this e-mail in error, please contact the sender and delete the material from your computer. Please note that any view opinions presented in this e-mail are solely those of the author and do not necessarily represent those of Exact Staff. and/or its affiliates. Finally, the recipient should check this e-mail and any attachments for the presence of viruses. Exact Staff accepts no liability for any damage caused by any virus transmitted by this e-mail.";
+
+let cachedExportState = null;
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function escapeAttr(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;");
+}
+
+function testImageUrl(url) {
+  return new Promise(function (resolve) {
+    var img = new Image();
+    img.onload = function () {
+      resolve(true);
+    };
+    img.onerror = function () {
+      resolve(false);
+    };
+    img.src = url;
+  });
+}
+
+async function resolveBannerSrc() {
+  for (var i = 0; i < BANNER_IMAGE_CANDIDATES.length; i++) {
+    if (await testImageUrl(BANNER_IMAGE_CANDIDATES[i])) {
+      return { src: BANNER_IMAGE_CANDIDATES[i], source: "hosted" };
+    }
+  }
+
+  if (previewBannerImg && previewBannerImg.src) {
+    return { src: previewBannerImg.src, source: "embedded" };
+  }
+
+  return { src: BANNER_IMAGE_CANDIDATES[0], source: "fallback" };
+}
+
+function cacheSignatureExportState() {
+  cachedExportState = {
+    name: EmployeeName.textContent.trim(),
+    position: EmployeePosition.textContent.trim(),
+    addressHtml: OfficeAddress.innerHTML.trim(),
+    tel: OfficeNumber.textContent.trim(),
+    fax: OfficeFax.textContent.trim(),
+    showSeparator: !infoSeparator || infoSeparator.style.display !== "none",
+    cell: EmployeeCell.textContent.trim(),
+    email: EmployeeEmail.textContent.trim(),
+  };
+}
+
+function buildContactLine(state) {
+  const { tel, fax, showSeparator } = state;
+  if (tel && fax && showSeparator) {
+    return `<span style="font-family:Helvetica,Arial,sans-serif;color:#000000;">${escapeHtml(tel)}</span> <span style="font-family:Helvetica,Arial,sans-serif;color:#000000;">|</span> <span style="font-family:Helvetica,Arial,sans-serif;color:#000000;">${escapeHtml(fax)}</span>`;
+  }
+  if (tel) {
+    return `<span style="font-family:Helvetica,Arial,sans-serif;color:#000000;">${escapeHtml(tel)}</span>`;
+  }
+  if (fax) {
+    return `<span style="font-family:Helvetica,Arial,sans-serif;color:#000000;">${escapeHtml(fax)}</span>`;
+  }
+  return "";
+}
+
+function buildSignatureExportHtml(state, bannerSrc) {
+  const contactLine = buildContactLine(state);
+  const cellLine = state.cell
+    ? `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;display:block;">${escapeHtml(state.cell)}</span>`
+    : "";
+  const emailLine = `<a href="mailto:${encodeURIComponent(state.email)}" style="color:#2e8722;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">${escapeHtml(state.email)}</a><span style="color:#2e8722;font-family:Helvetica,Arial,sans-serif;"> | </span><a href="https://www.exactstaff.com/" style="color:#2e8722;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">www.exactstaff.com</a>`;
+  const safeBannerSrc = escapeAttr(bannerSrc);
+
+  const contactBlock =
+    `<span style="font-weight:bold;font-size:14.5px;font-family:Helvetica,Arial,sans-serif;color:#000000;display:block;padding:0;margin:0;">${escapeHtml(state.name)}</span>` +
+    `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;display:block;">${escapeHtml(state.position)}</span>` +
+    `<br>` +
+    `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;display:block;">Exact Staff, Inc.</span>` +
+    `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;display:block;font-style:normal;">${state.addressHtml}</span>` +
+    (contactLine
+      ? `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;display:block;">${contactLine}</span>`
+      : "") +
+    cellLine +
+    `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;display:block;">${emailLine}</span>`;
+
+  return (
+    `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="550" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;width:550px;">` +
+    `<tr><td colspan="2" width="550" valign="top" style="padding:0;border:none;vertical-align:top;">${contactBlock}</td></tr>` +
+    `<tr><td colspan="2" width="550" valign="top" style="padding:8px 0 0 0;border:none;vertical-align:top;">` +
+    `<img src="${safeBannerSrc}" width="375" height="140" border="0" alt="Exact Staff" referrerpolicy="no-referrer" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">` +
+    `</td></tr>` +
+    `<tr><td colspan="2" valign="top" style="padding:10px 0 0 0;border:none;vertical-align:top;">` +
+    `<span style="font-size:11px;font-family:Helvetica,Arial,sans-serif;color:#000000;font-style:italic;">How am I doing? Please email our CEO, Karenjo Goodwin, at </span>` +
+    `<a href="mailto:kgoodwin@exactstaff.com" style="color:#2e8722;font-size:11px;font-family:Helvetica,Arial,sans-serif;font-style:italic;text-decoration:none;">kgoodwin@exactstaff.com</a>` +
+    `<span style="font-size:11px;font-family:Helvetica,Arial,sans-serif;color:#000000;font-style:italic;"> with any feedback.</span>` +
+    `</td></tr>` +
+    `<tr><td colspan="2" valign="top" style="padding:4px 0 0 0;border:none;vertical-align:top;">` +
+    `<span style="font-size:6px;font-family:Helvetica,Arial,sans-serif;color:#000000;line-height:1.2;mso-line-height-rule:exactly;display:block;">${escapeHtml(LEGAL_DISCLAIMER)}</span>` +
+    `</td></tr></table>`
+  );
+}
+
+function buildSignaturePlainText(state) {
+  const lines = [
+    state.name,
+    state.position,
+    "Exact Staff, Inc.",
+    OfficeAddress.textContent.trim().replace(/\s+/g, " "),
+  ];
+
+  const contactParts = [];
+  if (state.tel) contactParts.push(state.tel);
+  if (state.fax && state.showSeparator) contactParts.push(state.fax);
+  if (contactParts.length) lines.push(contactParts.join(" | "));
+
+  if (state.cell) lines.push(state.cell);
+  lines.push(`${state.email} | www.exactstaff.com`);
+  lines.push("");
+  lines.push(
+    "How am I doing? Please email our CEO, Karenjo Goodwin, at kgoodwin@exactstaff.com with any feedback."
+  );
+  lines.push("");
+  lines.push(LEGAL_DISCLAIMER);
+
+  return lines.join("\n");
+}
+
+function wrapClipboardHtml(fragment) {
+  return (
+    "<html>\r\n<body>\r\n" +
+    "<!--StartFragment-->\r\n" +
+    fragment +
+    "\r\n<!--EndFragment-->\r\n" +
+    "</body>\r\n</html>"
+  );
+}
+
+function showCopyToast(message, isError) {
+  if (!copyToast) return;
+  copyToast.hidden = false;
+  copyToast.textContent = message;
+  copyToast.className = isError ? "copy-toast copy-toast--error" : "copy-toast copy-toast--success";
+}
+
+function copyHtmlFallback(html, plain) {
+  return new Promise(function (resolve, reject) {
+    function onCopy(e) {
+      e.clipboardData.setData("text/html", html);
+      e.clipboardData.setData("text/plain", plain);
+      e.preventDefault();
+    }
+
+    document.addEventListener("copy", onCopy);
+    try {
+      var success = document.execCommand("copy");
+      document.removeEventListener("copy", onCopy);
+      if (success) resolve();
+      else reject(new Error("execCommand copy failed"));
+    } catch (err) {
+      document.removeEventListener("copy", onCopy);
+      reject(err);
+    }
+  });
+}
+
+function copyViaHiddenSelection(htmlFragment) {
+  return new Promise(function (resolve, reject) {
+    var container = document.createElement("div");
+    container.contentEditable = "true";
+    container.style.position = "fixed";
+    container.style.left = "-9999px";
+    container.style.top = "0";
+    container.innerHTML = htmlFragment;
+    document.body.appendChild(container);
+
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    try {
+      var success = document.execCommand("copy");
+      selection.removeAllRanges();
+      document.body.removeChild(container);
+      if (success) resolve();
+      else reject(new Error("selection copy failed"));
+    } catch (err) {
+      selection.removeAllRanges();
+      document.body.removeChild(container);
+      reject(err);
+    }
+  });
+}
+
+async function copySignatureToClipboard() {
+  if (!cachedExportState) {
+    showCopyToast("Please click Generate first.", true);
+    return;
+  }
+
+  if (copySignatureButton) {
+    copySignatureButton.disabled = true;
+  }
+
+  try {
+    var banner = await resolveBannerSrc();
+    var fragment = buildSignatureExportHtml(cachedExportState, banner.src);
+    var html = wrapClipboardHtml(fragment);
+    var plain = buildSignaturePlainText(cachedExportState);
+    var successMessage =
+      "Signature copied (testing). Paste into your email signature settings.";
+
+    if (banner.source === "embedded") {
+      successMessage +=
+        " Using embedded banner because the hosted image URL is not reachable.";
+    } else if (banner.source === "fallback") {
+      successMessage +=
+        " Warning: banner image URL could not be verified.";
+    }
+
+    try {
+      if (typeof ClipboardItem !== "undefined" && navigator.clipboard && navigator.clipboard.write) {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            "text/html": new Blob([html], { type: "text/html" }),
+            "text/plain": new Blob([plain], { type: "text/plain" }),
+          }),
+        ]);
+        showCopyToast(successMessage);
+        return;
+      }
+    } catch (err) {
+      // fall through
+    }
+
+    try {
+      await copyHtmlFallback(html, plain);
+      showCopyToast(successMessage);
+      return;
+    } catch (err) {
+      // fall through
+    }
+
+    await copyViaHiddenSelection(fragment);
+    showCopyToast(successMessage);
+  } catch (err) {
+    showCopyToast(
+      "Copy failed. Use manual copy from the signature box below.",
+      true
+    );
+  } finally {
+    if (copySignatureButton) {
+      copySignatureButton.disabled = false;
+    }
+  }
+}
+
+if (copySignatureButton) {
+  copySignatureButton.addEventListener("click", copySignatureToClipboard);
+}
+
 function handleSubmit(e) {
   e.preventDefault();
   const newEmployee = {
@@ -328,6 +608,11 @@ function handleSubmit(e) {
       break;
     default:
       OfficeAddress.innerHTML = "No Valid Location";
+  }
+
+  cacheSignatureExportState();
+  if (copySignatureButton) {
+    copySignatureButton.disabled = false;
   }
 }
 
