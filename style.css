@@ -118,6 +118,15 @@ select {
   font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   cursor: pointer;
+  line-height: 1.35;
+}
+
+.copy-timing-label {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: #666666;
 }
 
 #COPY-SIGNATURE:hover:not(:disabled) {
