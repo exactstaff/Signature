@@ -155,7 +155,7 @@ const offices = [
 function officeFormatter(key) {
   OfficeAddress.innerHTML = `
     ${offices[0].address}<br/>
-    ${offices[0].city},${offices[0].state} ${offices[0].zipcode}
+    ${offices[0].city}, ${offices[0].state} ${offices[0].zipcode}
     `;
   OfficeNumber.innerHTML = `Tel: ${offices[0].phone}`;
   OfficeFax.innerHTML = `Fax: ${offices[0].fax}`;
@@ -243,54 +243,95 @@ function cacheSignatureExportState() {
   };
 }
 
+function parseAddressLines(addressHtml) {
+  return addressHtml
+    .split(/<br\s*\/?>/i)
+    .map(function (part) {
+      return part.replace(/<[^>]*>/g, "").trim();
+    })
+    .filter(Boolean);
+}
+
 function buildContactLine(state) {
   const { tel, fax, showSeparator } = state;
   if (tel && fax && showSeparator) {
-    return `<span style="font-family:Helvetica,Arial,sans-serif;color:#000000;">${escapeHtml(tel)}</span> <span style="font-family:Helvetica,Arial,sans-serif;color:#000000;">|</span> <span style="font-family:Helvetica,Arial,sans-serif;color:#000000;">${escapeHtml(fax)}</span>`;
+    return `${escapeHtml(tel)} | ${escapeHtml(fax)}`;
   }
   if (tel) {
-    return `<span style="font-family:Helvetica,Arial,sans-serif;color:#000000;">${escapeHtml(tel)}</span>`;
+    return escapeHtml(tel);
   }
   if (fax) {
-    return `<span style="font-family:Helvetica,Arial,sans-serif;color:#000000;">${escapeHtml(fax)}</span>`;
+    return escapeHtml(fax);
   }
   return "";
 }
 
+function exportTextRow(content, options) {
+  options = options || {};
+  var fontSize = options.fontSize || "14.5px";
+  var lineHeight = options.lineHeight || "17px";
+  var extraStyle = options.style || "";
+  var nowrap = options.nowrap ? "white-space:nowrap;" : "";
+  var msoRule = options.msoLineHeightRule || "exactly";
+  var padding = options.padding != null ? options.padding : "0";
+
+  return (
+    `<tr><td colspan="2" style="padding:${padding};margin:0;border:none;vertical-align:top;` +
+    `font-family:Helvetica,Arial,sans-serif;font-size:${fontSize};color:#000000;` +
+    `line-height:${lineHeight};mso-line-height-rule:${msoRule};${nowrap}${extraStyle}">` +
+    content +
+    `</td></tr>`
+  );
+}
+
 function buildSignatureExportHtml(state, bannerSrc) {
   const contactLine = buildContactLine(state);
-  const cellLine = state.cell
-    ? `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;display:block;">${escapeHtml(state.cell)}</span>`
-    : "";
-  const emailLine = `<a href="mailto:${encodeURIComponent(state.email)}" style="color:#2e8722;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">${escapeHtml(state.email)}</a><span style="color:#2e8722;font-family:Helvetica,Arial,sans-serif;"> | </span><a href="https://www.exactstaff.com/" style="color:#2e8722;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">www.exactstaff.com</a>`;
+  const emailLine =
+    `<a href="mailto:${encodeURIComponent(state.email)}" style="color:#2e8722;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">${escapeHtml(state.email)}</a>` +
+    `<span style="color:#2e8722;font-family:Helvetica,Arial,sans-serif;"> | </span>` +
+    `<a href="https://www.exactstaff.com/" style="color:#2e8722;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">www.exactstaff.com</a>`;
   const safeBannerSrc = escapeAttr(bannerSrc);
+  const addressLines = parseAddressLines(state.addressHtml);
 
-  const contactBlock =
-    `<span style="font-weight:bold;font-size:14.5px;font-family:Helvetica,Arial,sans-serif;color:#000000;display:block;padding:0;margin:0;">${escapeHtml(state.name)}</span>` +
-    `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;display:block;">${escapeHtml(state.position)}</span>` +
-    `<br>` +
-    `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;display:block;">Exact Staff, Inc.</span>` +
-    `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;display:block;font-style:normal;">${state.addressHtml}</span>` +
-    (contactLine
-      ? `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;display:block;">${contactLine}</span>`
-      : "") +
-    cellLine +
-    `<span style="padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;display:block;">${emailLine}</span>`;
+  var rows =
+    exportTextRow(`<strong style="font-weight:bold;">${escapeHtml(state.name)}</strong>`) +
+    exportTextRow(escapeHtml(state.position)) +
+    exportTextRow("&nbsp;", { lineHeight: "8px", style: "font-size:8px;line-height:8px;" }) +
+    exportTextRow("Exact Staff, Inc.");
+
+  addressLines.forEach(function (line) {
+    rows += exportTextRow(escapeHtml(line));
+  });
+
+  if (contactLine) {
+    rows += exportTextRow(contactLine, { nowrap: true });
+  }
+
+  if (state.cell) {
+    rows += exportTextRow(escapeHtml(state.cell));
+  }
+
+  rows += exportTextRow(emailLine, { nowrap: true });
 
   return (
     `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="550" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:Helvetica,Arial,sans-serif;font-size:14.5px;color:#000000;width:550px;">` +
-    `<tr><td colspan="2" width="550" valign="top" style="padding:0;border:none;vertical-align:top;">${contactBlock}</td></tr>` +
-    `<tr><td colspan="2" width="550" valign="top" style="padding:8px 0 0 0;border:none;vertical-align:top;">` +
-    `<img src="${safeBannerSrc}" width="375" height="140" border="0" alt="Exact Staff" referrerpolicy="no-referrer" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">` +
+    rows +
+    `<tr><td colspan="2" width="550" valign="top" style="padding:8px 0 8px 0;border:none;vertical-align:top;font-size:14.5px;line-height:normal;mso-line-height-rule:at-least;">` +
+    `<br /><img src="${safeBannerSrc}" width="375" height="140" border="0" alt="Exact Staff" referrerpolicy="no-referrer" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"><br />` +
     `</td></tr>` +
-    `<tr><td colspan="2" valign="top" style="padding:10px 0 0 0;border:none;vertical-align:top;">` +
-    `<span style="font-size:11px;font-family:Helvetica,Arial,sans-serif;color:#000000;font-style:italic;">How am I doing? Please email our CEO, Karenjo Goodwin, at </span>` +
-    `<a href="mailto:kgoodwin@exactstaff.com" style="color:#2e8722;font-size:11px;font-family:Helvetica,Arial,sans-serif;font-style:italic;text-decoration:none;">kgoodwin@exactstaff.com</a>` +
-    `<span style="font-size:11px;font-family:Helvetica,Arial,sans-serif;color:#000000;font-style:italic;"> with any feedback.</span>` +
-    `</td></tr>` +
-    `<tr><td colspan="2" valign="top" style="padding:4px 0 0 0;border:none;vertical-align:top;">` +
-    `<span style="font-size:6px;font-family:Helvetica,Arial,sans-serif;color:#000000;line-height:1.2;mso-line-height-rule:exactly;display:block;">${escapeHtml(LEGAL_DISCLAIMER)}</span>` +
-    `</td></tr></table>`
+    exportTextRow(
+      `<br /><span style="font-style:italic;">How am I doing? Please email our CEO, Karenjo Goodwin, at </span>` +
+        `<a href="mailto:kgoodwin@exactstaff.com" style="color:#2e8722;font-style:italic;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">kgoodwin@exactstaff.com</a>` +
+        `<span style="font-style:italic;"> with any feedback.</span>`,
+      { fontSize: "11px", lineHeight: "14px", msoLineHeightRule: "at-least" }
+    ) +
+    exportTextRow(escapeHtml(LEGAL_DISCLAIMER), {
+      fontSize: "6pt",
+      lineHeight: "11pt",
+      msoLineHeightRule: "at-least",
+      padding: "4px 0 0 0",
+    }) +
+    `</table>`
   );
 }
 
@@ -478,7 +519,7 @@ function handleSubmit(e) {
     case "Calabasas":
       OfficeAddress.innerHTML = `
             ${offices[0].address}<br/>
-            ${offices[0].city},${offices[0].state} ${offices[0].zipcode}
+            ${offices[0].city}, ${offices[0].state} ${offices[0].zipcode}
             `;
       OfficeNumber.innerHTML = `Tel: ${offices[0].phone}`;
       OfficeFax.innerHTML = `Fax: ${offices[0].fax}`;
@@ -486,7 +527,7 @@ function handleSubmit(e) {
     case "Bakersfield":
       OfficeAddress.innerHTML = `
             ${offices[1].address}<br/>
-            ${offices[1].city},${offices[1].state} ${offices[1].zipcode}
+            ${offices[1].city}, ${offices[1].state} ${offices[1].zipcode}
             `;
       OfficeNumber.innerHTML = `Tel: ${offices[1].phone}`;
       OfficeFax.innerHTML = `Fax: ${offices[1].fax}`;
@@ -494,7 +535,7 @@ function handleSubmit(e) {
     case "Fresno":
       OfficeAddress.innerHTML = `
             ${offices[2].address}<br/>
-            ${offices[2].city},${offices[2].state} ${offices[2].zipcode}
+            ${offices[2].city}, ${offices[2].state} ${offices[2].zipcode}
             `;
       OfficeNumber.innerHTML = `Tel: ${offices[2].phone}`;
       OfficeFax.innerHTML = `Fax: ${offices[2].fax}`;
@@ -502,7 +543,7 @@ function handleSubmit(e) {
     case "Gardena/Torrance":
       OfficeAddress.innerHTML = `
             ${offices[3].address}<br/>
-            ${offices[3].city},${offices[3].state} ${offices[3].zipcode}
+            ${offices[3].city}, ${offices[3].state} ${offices[3].zipcode}
             `;
       OfficeNumber.innerHTML = `Tel: ${offices[3].phone}`;
       OfficeFax.innerHTML = `Fax: ${offices[3].fax}`;
@@ -510,7 +551,7 @@ function handleSubmit(e) {
     case "Camarillo":
       OfficeAddress.innerHTML = `
             ${offices[4].address}<br/>
-            ${offices[4].city},${offices[4].state} ${offices[4].zipcode}
+            ${offices[4].city}, ${offices[4].state} ${offices[4].zipcode}
             `;
       OfficeNumber.innerHTML = `Tel: ${offices[4].phone}`;
       OfficeFax.innerHTML = `Fax: ${offices[4].fax}`;
@@ -518,7 +559,7 @@ function handleSubmit(e) {
     case "Ontario":
       OfficeAddress.innerHTML = `
             ${offices[5].address}<br/>
-            ${offices[5].city},${offices[5].state} ${offices[5].zipcode}
+            ${offices[5].city}, ${offices[5].state} ${offices[5].zipcode}
             `;
       OfficeNumber.innerHTML = `Tel: ${offices[5].phone}`;
       OfficeFax.innerHTML = `Fax: ${offices[5].fax}`;
@@ -526,7 +567,7 @@ function handleSubmit(e) {
     case "Sacramento/Woodland":
       OfficeAddress.innerHTML = `
             ${offices[6].address}<br/>
-            ${offices[6].city},${offices[6].state} ${offices[6].zipcode}
+            ${offices[6].city}, ${offices[6].state} ${offices[6].zipcode}
             `;
       OfficeNumber.innerHTML = `Tel: ${offices[6].phone}`;
       OfficeFax.innerHTML = `Fax: ${offices[6].fax}`;
@@ -534,7 +575,7 @@ function handleSubmit(e) {
     case "Valencia/Santa Clarita":
       OfficeAddress.innerHTML = `
             ${offices[7].address}<br/>
-            ${offices[7].city},${offices[7].state} ${offices[7].zipcode}
+            ${offices[7].city}, ${offices[7].state} ${offices[7].zipcode}
             `;
       OfficeNumber.innerHTML = `Tel: ${offices[7].phone}`;
       OfficeFax.innerHTML = `Fax: ${offices[7].fax}`;
@@ -542,7 +583,7 @@ function handleSubmit(e) {
     case "Fresno":
       OfficeAddress.innerHTML = `
             ${offices[8].address}<br/>
-            ${offices[8].city},${offices[8].state} ${offices[8].zipcode}
+            ${offices[8].city}, ${offices[8].state} ${offices[8].zipcode}
             `;
       OfficeNumber.innerHTML = `Tel: ${offices[8].phone}`;
       OfficeFax.innerHTML = `Fax: ${offices[8].fax}`;
@@ -550,7 +591,7 @@ function handleSubmit(e) {
     case "Maryland":
       OfficeAddress.innerHTML = `
             ${offices[9].address}<br/>
-            ${offices[9].city},${offices[9].state} ${offices[9].zipcode}
+            ${offices[9].city}, ${offices[9].state} ${offices[9].zipcode}
             `;
       OfficeNumber.innerHTML = `Tel: ${offices[9].phone}`;
       OfficeFax.innerHTML = `Fax: ${offices[9].fax}`;
@@ -558,7 +599,7 @@ function handleSubmit(e) {
     case "Oregon":
       OfficeAddress.innerHTML = `
             ${offices[10].address}<br/>
-            ${offices[10].city},${offices[10].state} ${offices[10].zipcode}
+            ${offices[10].city}, ${offices[10].state} ${offices[10].zipcode}
             `;
       OfficeNumber.innerHTML = `Tel: ${offices[10].phone}`;
       OfficeFax.innerHTML = `Fax: ${offices[10].fax}`;
@@ -566,7 +607,7 @@ function handleSubmit(e) {
     case "Texas":
       OfficeAddress.innerHTML = `
             ${offices[11].address}<br/>
-            ${offices[11].city},${offices[11].state} ${offices[11].zipcode}
+            ${offices[11].city}, ${offices[11].state} ${offices[11].zipcode}
             `;
       OfficeNumber.innerHTML = ``;
       OfficeFax.innerHTML = ``;
@@ -575,7 +616,7 @@ function handleSubmit(e) {
     case "Modesto/Turlock":
       OfficeAddress.innerHTML = `
             ${offices[12].address}<br/>
-            ${offices[12].city},${offices[12].state} ${offices[12].zipcode}
+            ${offices[12].city}, ${offices[12].state} ${offices[12].zipcode}
             `;
       document.querySelector("#INFO-SEPERATOR").style.display = "none";
       OfficeNumber.innerHTML = ``;
@@ -584,7 +625,7 @@ function handleSubmit(e) {
     case "Kansas":
       OfficeAddress.innerHTML = `
             ${offices[13].address}<br/>
-            ${offices[13].city},${offices[13].state} ${offices[13].zipcode}
+            ${offices[13].city}, ${offices[13].state} ${offices[13].zipcode}
             `;
       document.querySelector("#INFO-SEPERATOR").style.display = "none";
       OfficeNumber.innerHTML = ``;
@@ -592,7 +633,7 @@ function handleSubmit(e) {
       break;
     case "Iowa":
       OfficeAddress.innerHTML = `
-            ${offices[14].city},${offices[14].state} ${offices[14].zipcode}
+            ${offices[14].city}, ${offices[14].state} ${offices[14].zipcode}
             `;
       document.querySelector("#INFO-SEPERATOR").style.display = "none";
       OfficeNumber.innerHTML = ``;
@@ -600,7 +641,7 @@ function handleSubmit(e) {
       break;
     case "Massachusetts":
       OfficeAddress.innerHTML = `
-            ${offices[15].city},${offices[15].state} ${offices[15].zipcode}
+            ${offices[15].city}, ${offices[15].state} ${offices[15].zipcode}
             `;
       document.querySelector("#INFO-SEPERATOR").style.display = "none";
       OfficeNumber.innerHTML = `Tel: ${offices[15].phone}`;
