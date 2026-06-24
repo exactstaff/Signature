@@ -287,9 +287,9 @@ function exportTextRow(content, options) {
 function buildSignatureExportHtml(state, bannerSrc) {
   const contactLine = buildContactLine(state);
   const emailLine =
-    `<a href="mailto:${encodeURIComponent(state.email)}" style="color:#2e8722;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">${escapeHtml(state.email)}</a>` +
+    `<a href="mailto:${encodeURIComponent(state.email)}" style="color:#2e8722;text-decoration:underline;font-family:Helvetica,Arial,sans-serif;">${escapeHtml(state.email)}</a>` +
     `<span style="color:#2e8722;font-family:Helvetica,Arial,sans-serif;"> | </span>` +
-    `<a href="https://www.exactstaff.com/" style="color:#2e8722;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">www.exactstaff.com</a>`;
+    `<a href="https://www.exactstaff.com/" style="color:#2e8722;text-decoration:underline;font-family:Helvetica,Arial,sans-serif;">www.exactstaff.com</a>`;
   const safeBannerSrc = escapeAttr(bannerSrc);
   const addressLines = parseAddressLines(state.addressHtml);
 
